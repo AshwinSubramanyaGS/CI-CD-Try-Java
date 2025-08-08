@@ -41,21 +41,22 @@ pipeline {
         stage('Local Deploy') {
     steps {
         script {
-            // Get the first JAR file in target directory (escape %% for Jenkins bat step)
+            // Find the JAR filename only (ignore command echo)
             def jarFile = bat(
-                script: 'for /f "delims=" %%i in (\'dir /B target\\*.jar\') do @echo %%i',
+                script: '@echo off & for /f "delims=" %%i in (\'dir /B target\\*.jar ^| findstr /V /I "-sources.jar" ^| findstr /V /I "-tests.jar"\') do @echo %%i',
                 returnStdout: true
             ).trim()
 
             if (jarFile) {
                 echo "Deploying JAR: ${jarFile}"
-                bat "java -jar \"target\\${jarFile}\" --server.port=9090"
+                bat "@echo off & java -jar \"target\\${jarFile}\" --server.port=9090"
             } else {
-                error "No JAR found in target directory!"
+                error "No runnable JAR found in target directory!"
             }
         }
     }
 }
+
 
     }
 
