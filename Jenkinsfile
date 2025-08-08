@@ -31,11 +31,10 @@ pipeline {
 
         stage('Version Document') {
             steps {
-                bat '''
-                echo "Build Version: $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" > version.txt
-                bat 'echo Build Time: %DATE% >> version.txt'
-                '''
-                archiveArtifacts artifacts: 'version.txt', followSymlinks: false
+                bat 'echo Build Version: > version.txt'
+                bat 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout >> version.txt'
+                bat 'echo Build Time: %DATE% %TIME% >> version.txt'
+                archiveArtifacts artifacts: 'version.txt'
             }
         }
 
