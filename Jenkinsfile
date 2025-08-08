@@ -41,7 +41,9 @@ pipeline {
 
         stage('Local Deploy') {
             steps {
-                bat 'java -jar target/*.jar --server.port=9090 &'
+                def jarFile = bat(script: 'dir /B target\\*.jar', returnStdout: true).trim()
+                bat "java -jar target\\${jarFile} --server.port=9090"
+
             }
         }
     }
