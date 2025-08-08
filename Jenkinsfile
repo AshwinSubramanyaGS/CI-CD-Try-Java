@@ -41,11 +41,17 @@ pipeline {
 
         stage('Local Deploy') {
             steps {
-               script {
-                        def jarFile = bat(script: 'dir /B target\\*.jar', returnStdout: true).trim()
-                        bat "java -jar target\\${jarFile} --server.port=9090"
-                    }
-            }
+        script {
+            // Get only the JAR filename (no path, no extra output)
+            def jarFile = bat(
+                script: 'dir /B target\\*.jar',
+                returnStdout: true
+            ).trim()
+
+            // Run it
+            bat "java -jar target\\${jarFile} --server.port=9090"
+        }
+    }
         }
     }
 
