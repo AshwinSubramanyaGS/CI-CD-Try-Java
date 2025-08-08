@@ -39,16 +39,15 @@ pipeline {
             }
         }
 
-        stage('Local Deploy') {
-    steps {
-        script {
-            // List JAR files and grab the first match
+        steps {
+            script {
+                // List JAR files and grab the first match
                 def jarFile = bat(
                     script: 'for /f "delims=" %i in (\'dir /B target\\*.jar\') do @echo %i',
                     returnStdout: true
                 ).trim()
 
-            // Check if file exists
+                // Check if file exists
                 if (jarFile) {
                     echo "Deploying JAR: ${jarFile}"
                     bat "java -jar target\\${jarFile} --server.port=9090"
@@ -58,7 +57,6 @@ pipeline {
             }
         }
     }
-
 
     post {
         success {
