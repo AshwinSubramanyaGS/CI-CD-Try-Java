@@ -19,19 +19,19 @@ pipeline {
 
         stage('Build JAR') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                bat 'mvn clean package -DskipTests'
             }
         }
 
         stage('Unit Tests') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
 
         stage('Version Document') {
             steps {
-                sh '''
+                bat '''
                 echo "Build Version: $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" > version.txt
                 echo "Build Time: $(date)" >> version.txt
                 '''
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Local Deploy') {
             steps {
-                sh 'java -jar target/*.jar --server.port=9090 &'
+                bat 'java -jar target/*.jar --server.port=9090 &'
             }
         }
     }
