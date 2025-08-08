@@ -33,7 +33,7 @@ pipeline {
             steps {
                 bat '''
                 echo "Build Version: $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" > version.txt
-                echo "Build Time: $(date)" >> version.txt
+                bat 'echo Build Time: %DATE% >> version.txt'
                 '''
                 archiveArtifacts artifacts: 'version.txt', followSymlinks: false
             }
