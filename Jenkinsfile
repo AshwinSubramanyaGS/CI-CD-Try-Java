@@ -41,9 +41,9 @@ pipeline {
         stage('Local Deploy') {
     steps {
         script {
-            // Find the JAR filename only (ignore command echo)
+            // Disable echo, get the first .jar file in target
             def jarFile = bat(
-                script: '@echo off & for /f "delims=" %%i in (\'dir /B target\\*.jar ^| findstr /V /I "-sources.jar" ^| findstr /V /I "-tests.jar"\') do @echo %%i',
+                script: '@echo off & for /f "delims=" %%i in (\'dir /B target\\*.jar\') do @echo %%i',
                 returnStdout: true
             ).trim()
 
@@ -56,6 +56,7 @@ pipeline {
         }
     }
 }
+
 
 
     }
