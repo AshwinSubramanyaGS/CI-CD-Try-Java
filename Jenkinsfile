@@ -41,7 +41,6 @@ pipeline {
         stage('Local Deploy') {
     steps {
         script {
-            // Disable echo, get the first .jar file in target
             def jarFile = bat(
                 script: '@echo off & for /f "delims=" %%i in (\'dir /B target\\*.jar\') do @echo %%i',
                 returnStdout: true
@@ -49,7 +48,14 @@ pipeline {
 
             if (jarFile) {
                 echo "Deploying JAR: ${jarFile}"
-                bat "@echo off & java -jar \"target\\${jarFile}\" --server.port=9090"
+                // Start in background and continue
+                bat "start \"SpringBootApp\" /B java -jar \"target\\${jarFile}\" --server.port=9090"
+                
+                // Optional: Wait a bit to ensure app starts
+                sleep time: 10, unit: 'SECONDS'
+                
+                // Optional: Test if the application is responding
+                bat "curl -f http://localhost:9090/ || echo \"Application not ready yet\""
             } else {
                 error "No runnable JAR found in target directory!"
             }
@@ -59,9 +65,9 @@ pipeline {
 
 
 
-    }
+}
 
-    post {
+post {
         success {
             echo "Build and Deploy completed successfully!"
         }
